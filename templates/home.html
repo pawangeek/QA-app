@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "navbar.html" import navbar %}
+{% block title %}Questions & Answers{% endblock %}
+{% block nav %}
+  {{ navbar(user) }}
+{% endblock %}
+
+{% block body %}
+      <div class="page-header">
+        <h1>Answered Questions</h1>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="list-group">
+
+              {% for que in ques %}
+                  <a href="{{ url_for('question',question_id = que['question_id']) }}" class="list-group-item">
+              <h4 class="list-group-item-heading">{{ que['question_text'] }}</h4>
+              <p class="list-group-item-text">Asked By : {{ que['asker_name'] }}</p>
+              <p class="list-group-item-text">Answered By : {{ que['expert_name'] }}</p>
+            </a>
+              {% endfor %}
+          </div>
+        </div><!-- /.col-lg-12 -->
+      </div>
+{% endblock %}
