@@ -19,12 +19,19 @@ app.config['SECRET_KEY'] = '\x13\x18\xe8\x88\x0b\xc1\xb6\xd8\x90+\xb7\x9e\xe1\xb
 
 
 @app.teardown_appcontext
+# Database Connection for postgresql
 def close_db(error):
     if hasattr(g, 'postgres_db_cur'):
         g.postgres_db_cur.close()
 
     if hasattr(g, 'postgres_db_conn'):
         g.postgres_db_conn.close()
+
+# Database connection for sqlite3
+
+# def close_db(error):
+#    if hasattr(g, 'sqlite.db'):
+#         g.sqlite_db.close()
 
 
 def get_current_user():
@@ -199,13 +206,13 @@ def question(question_id):
     user = get_current_user()
     db = get_db()
 
+    # You can use join two times
     db.execute('''select questions.question_text, questions.answer_text, 
                             askers.name as asker_name, experts.name as expert_name from questions join users 
                             as askers on askers.id = questions.asked_by_id join users as experts on 
                             experts.id = questions.expert_id where questions.id = %s''', (question_id, ))
 
     question = db.fetchone()
-
     return render_template('question.html', user=user, question=question)
 
 
@@ -213,6 +220,7 @@ def question(question_id):
 def promote(user_id):
     user = get_current_user()
 
+    # Limit users and non-users from accessing admin area
     if not user:
         return redirect(url_for('login'))
 
